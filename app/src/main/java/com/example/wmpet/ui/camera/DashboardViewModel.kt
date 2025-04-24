@@ -1,4 +1,4 @@
-package com.example.wmpet.ui.dashboard
+package com.example.wmpet.ui.camera
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

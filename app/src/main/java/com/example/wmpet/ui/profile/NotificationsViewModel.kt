@@ -1,4 +1,4 @@
-package com.example.wmpet.ui.notifications
+package com.example.wmpet.ui.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
