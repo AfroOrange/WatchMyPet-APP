@@ -14,10 +14,14 @@ import android.widget.EditText
 import android.widget.Toast
 import com.example.wmpet.R
 import com.example.wmpet.databinding.ActivityLoginBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
 
@@ -31,6 +35,20 @@ class LoginActivity : AppCompatActivity() {
         val password = binding.password
         val login = binding.login
         val loading = binding.loading
+
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+
+        binding.login.setOnClickListener(
+            val email = binding.username.text.toString()
+            val password = binding.password.text.toString()
+
+            if (email.isNotEmpty() && password isNotEmpty()) {
+                signInWithEmailAndPassword(email, password)
+            } else {
+                Toast.makeText(this, "Email and password must not be empty", Toast.LENGTH_SHORT).show()
+            }
+        )
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
