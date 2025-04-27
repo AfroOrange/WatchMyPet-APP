@@ -1,6 +1,7 @@
 package com.example.wmpet.ui.activities.ui.login
 
 import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -8,12 +9,14 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
 import com.example.wmpet.R
 import com.example.wmpet.databinding.ActivityLoginBinding
+import com.example.wmpet.ui.activities.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -39,16 +42,17 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        binding.login.setOnClickListener(
+        binding.login.setOnClickListener {
             val email = binding.username.text.toString()
             val password = binding.password.text.toString()
 
-            if (email.isNotEmpty() && password isNotEmpty()) {
+            if (email.isNotEmpty() && password.isNotEmpty()) {
                 signInWithEmailAndPassword(email, password)
             } else {
-                Toast.makeText(this, "Email and password must not be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Email and password must not be empty", Toast.LENGTH_SHORT)
+                    .show()
             }
-        )
+        }
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
@@ -129,6 +133,43 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+    }
+
+     private fun signInWithEmailAndPassword(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                // Sign in success, update UI with the signed-in user's information
+                val user = auth.currentUser
+                Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+
+                // Navigate to the next activity
+                startActivity(Intent(this, MainActivity::class.java))
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w("Login Activity", "signInWithEmail:failure", task.exception)
+                Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun registerWithFirebase(email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    val userData = hashMapOf("email" to email, "uid" to user!!.uid)
+                    firestore.collection("users").document(user.uid).set(userData)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("LoginActivity", "Error writing document", e)
+                        }
+                } else {
+                    Log.w("LoginActivity", "createUserWithEmail:failure", task.exception)
+                    Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 }
 
