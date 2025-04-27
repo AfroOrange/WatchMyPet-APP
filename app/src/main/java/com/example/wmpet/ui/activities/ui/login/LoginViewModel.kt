@@ -4,10 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
+import com.example.wmpet.R
 import com.example.wmpet.ui.activities.data.LoginRepository
 import com.example.wmpet.ui.activities.data.Result
-
-import com.example.wmpet.ui.activities.R
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 

@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("CustomSplashScreen")
 class SplashScreen : AppCompatActivity() {
 
+    @SuppressLint("MissingInflatedId")
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

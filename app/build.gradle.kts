@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-
+    id("com.android.application")
+    id("com.google.gms.google-services")
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
 }
@@ -43,9 +43,9 @@ android {
 
 dependencies {
 
-    implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
-    implementation("com.google.firebase:firebase-auth:21.5.0")
-    implementation("com.google.firebase:firebase-firestore:24.7.0")
+    implementation(libs.firebase.bom.v33130)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.auth.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
